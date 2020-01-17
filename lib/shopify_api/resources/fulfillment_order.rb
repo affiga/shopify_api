@@ -43,6 +43,15 @@ module ShopifyAPI
       load_attributes_from_response(post(:close, {}, body.to_json))
     end
 
+    def locations_for_move(options = {})
+      location_hashes = get(:locations_for_move, options)
+
+      location_hashes.map do |location_hash|
+        param = location_hash["location"].merge(location_hash.except("location"))
+        Location.new(param)
+      end
+    end
+
     def request_fulfillment(fulfillment_order_line_items: nil, message: nil)
       body = {
         fulfillment_request: {

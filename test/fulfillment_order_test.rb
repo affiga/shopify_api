@@ -57,6 +57,21 @@ class FulFillmentOrderTest < Test::Unit::TestCase
       end
     end
 
+    context "#locations_for_move" do
+      should "be able to list locations for a fulfillment order" do
+        fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
+        fake "fulfillment_orders/#{fulfillment_order.id}/locations_for_move", method: :get,
+             body: load_fixture('locations')
+
+        locations = fulfillment_order.locations_for_move
+
+        assert_equal 2, locations.count
+        location = locations.first
+        assert location.is_a?(ShopifyAPI::Location)
+        assert_equal 1059367776, location.id
+      end
+    end
+
     context "#move" do
       should "move a fulfillment order to a new_location_id" do
         fulfillment_order = ShopifyAPI::FulfillmentOrder.find(519788021)
